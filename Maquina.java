@@ -8,14 +8,14 @@ import java.util.Scanner;
  * */
 
 public class Maquina {
-    public static void main(String[] args) {
+    public static void main(String[] args)  throws InterruptedException{
         menu();
     }
 
     /**
      * Muestra el menu de la aplicación
      */
-    public static void menu(){
+    public static void menu() throws InterruptedException {
         //Array de las Golosinas
         String [][] golosinas={
                 {
@@ -52,7 +52,7 @@ public class Maquina {
         int stock[][]=new int[4][4];
         //llamamos la funcion de rellenar la maquina
         stock=rellenarMaquina(stock,5);
-        mostrar(Arrays.deepToString(stock));
+    //    mostrar(Arrays.deepToString(stock));
         boolean salir=false; // para validar el bucle del menu
         double totalVentaEuros=0;
         int opcion, fila,columna,cantidadStrock,pos;
@@ -70,24 +70,32 @@ public class Maquina {
             opcion=sn.nextInt();
             // hacemos un switch case de opciones
             switch (opcion){
-                case 1->{
+                case 1-> {
                     //Pedir las golosinas
-                     mostrar("Posicion");
-                     pos = sn.nextInt();
-                    if (pos>=0 && pos<=33){
-                        columna=pos%10;
+                    mostrarSinLn("Indique la posición de la Golosina a comprar->");
+                    pos= sn.nextInt();
+                    //tenemos que validar que la posicion sea >=0 y <=33
+                    if (pos>=0 &&pos<=3 || pos>10 &&pos<=13 ||pos>=20&&pos<=23 || pos>=30&&pos<=33){
+                        //calculamos el valor de la fila
                         fila=(pos%100)/10;
-                        if (controlStock(stock,fila,columna)){
-                            mostrar("Ingrese por favor " + precios[fila][columna]+ " y pulse ENTER");
-                            mostrar(" ");
-                            stock[fila][columna]--;
-                            totalVentaEuros+=precios[fila][columna];
-                            mostrar("Gracias por su Compra de un " + golosinas[fila][columna]);
-                        }
-
-                    }else {
-                        mostrar("Código no válido");
+                        columna=pos%10;
+                        //llamar un metodo que controle el stock y me diga true o false si hay cantidad suficiente a vender
+                         if (controlStock(stock,fila,columna)){
+                             mostrar("Ingresa el Dinero " + precios[fila][columna] + "€");
+                             double aux=sn.nextDouble();
+                             if (aux>precios[fila][columna]){
+                                 mostrar("Tu cambio -> " + (aux-precios[fila][columna])+"€");
+                             }
+                             mostrar("Disfuta de tu ......"+ golosinas[fila][columna]);
+                             stock[fila][columna]--;
+                             totalVentaEuros+=precios[fila][columna];
+                         }else{
+                             mostrar("No hay " + golosinas[fila][columna] + " en la máquina");
+                         }
+                    }else{
+                        mostrar("Opción no admitida");
                     }
+
                 }
                 case 2-> {
                     //mostrar todos los códigos, los nombres de las golosinas y su precio
@@ -95,9 +103,26 @@ public class Maquina {
                 }
                 case 3->{
                     //solicitara la contraseña del técnico y luego llamar la funcion de rellenar
+                    mostrar("Ingrese la Contraseña autorizada->");
+                    String pass=sn.next();sn.nextLine();
+                    //validamos que el tecnico intruduce la contraeña correcta
+                    if (pass.equals("chuch3s")){
+                        mostrar("..........Reponiendo la Maquina........");
+                        for (int i = 0; i < 4; i++) {
+                            for (int j = 0; j < 4; j++) {
+                                mostrarSinLn("\uD83C\uDF6C");
+                                Thread.sleep(500);
+                            }
+                            mostrar("");
+                        }
+                        rellenarMaquina(stock,5);
+                    }else{
+                        mostrar("Usuario no autorizado");
+                    }
                 }
                 case 4->{
                     //mostrar lo recolectado en las ventas de la máquina (cierre de caja)
+                    mostrar("La maquina ha vendido ->" + totalVentaEuros + "€");
                     salir=true;
                 }
                 default->mostrar("Opcion no válida");
@@ -119,14 +144,20 @@ public class Maquina {
         }
     }
 
-public static boolean controlStock(int stock[][],int fila,int columna){
-        if (stock[fila][columna]==0){
-            return false;
-        }else{
-            return true;
-        }
+    /**
+     * Método que controla el stock mediante booleanos
+     * @param stock
+     * @param fila
+     * @param columna
+     * @return
+     */
 
-
+public static boolean controlStock(int stock[][],int fila,int columna) {
+    if (stock[fila][columna] == 0) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
     /**
