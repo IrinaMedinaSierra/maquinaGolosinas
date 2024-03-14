@@ -77,8 +77,13 @@ public class Maquina {
                     if (pos>=0 && pos<=33){
                         columna=pos%10;
                         fila=(pos%100)/10;
-                        mostrar("fila"+ fila);
-                        mostrar("columna"+columna);
+                        if (controlStock(stock,fila,columna)){
+                            mostrar("Ingrese por favor " + precios[fila][columna]+ " y pulse ENTER");
+                            mostrar(" ");
+                            stock[fila][columna]--;
+                            totalVentaEuros+=precios[fila][columna];
+                            mostrar("Gracias por su Compra de un " + golosinas[fila][columna]);
+                        }
 
                     }else {
                         mostrar("Código no válido");
@@ -114,7 +119,15 @@ public class Maquina {
         }
     }
 
+public static boolean controlStock(int stock[][],int fila,int columna){
+        if (stock[fila][columna]==0){
+            return false;
+        }else{
+            return true;
+        }
 
+
+}
 
     /**
      * Método que se utiliza para rellenar el stock de la máquina al inicio y cuando va el técnico
